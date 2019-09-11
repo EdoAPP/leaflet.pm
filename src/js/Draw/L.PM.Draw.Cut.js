@@ -51,7 +51,7 @@ Draw.Cut = Draw.Polygon.extend({
         geoJSONs.forEach((g) => {
           const newL = L.geoJSON(g, l.options);
           resultingLayers.push(newL);
-          newL.addTo(this._map);
+          // newL.addTo(this._map);
 
           // give the new layer the original options
           newL.pm.enable(this.options);
@@ -59,9 +59,9 @@ Draw.Cut = Draw.Polygon.extend({
         });
       } else {
         // add new layer to map
-        const newL = L.geoJSON(diff, l.options).addTo(this._map);
+        const newL = L.geoJSON(diff, l.options);
         resultingLayers.push(newL);
-        newL.addTo(this._map);
+        // newL.addTo(this._map);
 
         // give the new layer the original options
         newL.pm.enable(this.options);
