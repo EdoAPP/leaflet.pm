@@ -9,7 +9,6 @@ Draw.Cut = Draw.Polygon.extend({
     this.toolbarButtonName = 'cutPolygon';
   },
   _cut(layer) {
-    // console.log('im here');
     const all = this._map._layers;
 
     // find all layers that intersect with `layer`, the just drawn cutting layer
