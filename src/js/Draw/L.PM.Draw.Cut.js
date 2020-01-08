@@ -33,7 +33,7 @@ Draw.Cut = Draw.Polygon.extend({
 
     // loop through all layers that intersect with the drawn (cutting) layer
     layers.forEach((l) => {
-      const diff = difference(l.toGeoJSON(15), layer.toGeoJSON(15));
+      const diff = difference(l.toGeoJSON(100), layer.toGeoJSON(100));
 
       // the resulting layer after the cut
       const resultingLayer = L.geoJSON(diff, l.options);
@@ -42,20 +42,39 @@ Draw.Cut = Draw.Polygon.extend({
       resultingLayer.pm.enable(this.options);
       resultingLayer.pm.disable();
 
-      console.log(resultingLayer);
+      let resultingLayers = [resultingLayer];
 
+      if (
+        diff &&
+        diff.geometry &&
+        diff.geometry.type === "MultiPolygon"
+      ) {
+        resultingLayers = diff.geometry.coordinates.map((coordinates) => {
+          const geojson = {
+            type: 'Polygon',
+            coordinates,
+          };
+
+          const newLayer = L.geoJSON(geojson, l.options);
+
+          newLayer.pm.enable(this.options);
+          newLayer.pm.disable();
+
+          return newLayer;
+        });
+      }
 
       // fire pm:cut on the cutted layer
       l.fire('pm:cut', {
         shape: this._shape,
-        resultingLayers: [resultingLayer],
+        resultingLayers,
         cuttedLayer: l,
       });
 
       // fire pm:cut on the map
       this._map.fire('pm:cut', {
         shape: this._shape,
-        resultingLayers: [resultingLayer],
+        resultingLayers,
         cuttedLayer: l,
       });
 
