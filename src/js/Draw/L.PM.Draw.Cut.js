@@ -33,7 +33,7 @@ Draw.Cut = Draw.Polygon.extend({
 
     // loop through all layers that intersect with the drawn (cutting) layer
     layers.forEach((l) => {
-      const diff = difference(l.toGeoJSON(100), layer.toGeoJSON(100));
+      const diff = difference(l.toGeoJSON(15), layer.toGeoJSON(15));
 
       // the resulting layer after the cut
       const resultingLayer = L.geoJSON(diff, l.options);
