@@ -29,7 +29,7 @@ Draw.Rectangle = Draw.extend({
     // this needs to be present, for tracking purposes, but we'll make it invisible if a user doesn't want to see it!
     this._startMarker = L.marker([0, 0], {
       icon: L.divIcon({ className: 'marker-icon rect-start-marker' }),
-      draggable: true,
+      draggable: false,
       zIndexOffset: 100,
       opacity: this.options.cursorMarker ? 1 : 0,
     });
@@ -67,7 +67,7 @@ Draw.Rectangle = Draw.extend({
           icon: L.divIcon({
             className: 'marker-icon rect-style-marker',
           }),
-          draggable: true,
+          draggable: false,
           zIndexOffset: 100,
         });
         styleMarker._pmTempLayer = true;
@@ -223,9 +223,19 @@ Draw.Rectangle = Draw.extend({
     }
   },
   _finishShape(e) {
-    // create the final rectangle layer, based on opposite corners A & B
+    // assign the coordinate of the click to the hintMarker, that's necessary for
+    // mobile where the marker can't follow a cursor
+    if (!this._hintMarker._snapped) {
+      this._hintMarker.setLatLng(e.latlng);
+    }
+
+    // get coordinate for new vertex by hintMarker (cursor marker)
+    const B = this._hintMarker.getLatLng();
+
+    // get already placed corner from the startmarker
     const A = this._startMarker.getLatLng();
-    const B = e.latlng;
+
+    // create the final rectangle layer, based on opposite corners A & B
     const rectangleLayer = L.rectangle([A, B], this.options.pathOptions).addTo(
       this._map
     );
