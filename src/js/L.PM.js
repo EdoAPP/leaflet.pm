@@ -1,8 +1,11 @@
-/**
- *
- * A Leaflet Plugin For Editing Geometry Layers in Leaflet 1.0
- * by Sumit Kumar (@TweetsOfSumit)
- * Github Repo: https://github.com/codeofsumit/leaflet.pm
+/* A Leaflet Plugin For Editing Geometry Layers in Leaflet 1.0
+ * Copyright (C) Geoman.io and Sumit Kumar - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Sumit Kumar <sumit@geoman.io>, January 2020
+ * Twitter: @TweetsOfSumit
+ * OSS Repo: https://github.com/geoman-io/leaflet-geoman
+ * Get Pro: https://geoman.io/leaflet-geoman#pro
  */
 
 import './polyfills';
@@ -14,87 +17,143 @@ import Toolbar from './Toolbar/L.PM.Toolbar';
 import Draw from './Draw/L.PM.Draw';
 import './Draw/L.PM.Draw.Marker';
 import './Draw/L.PM.Draw.Line';
-import './Draw/L.PM.Draw.Poly';
+import './Draw/L.PM.Draw.Polygon';
 import './Draw/L.PM.Draw.Rectangle';
 import './Draw/L.PM.Draw.Circle';
+import './Draw/L.PM.Draw.CircleMarker';
 import './Draw/L.PM.Draw.Cut';
 
 import Edit from './Edit/L.PM.Edit';
 import './Edit/L.PM.Edit.LayerGroup';
 import './Edit/L.PM.Edit.Marker';
 import './Edit/L.PM.Edit.Line';
-import './Edit/L.PM.Edit.Poly';
+import './Edit/L.PM.Edit.Polygon';
 import './Edit/L.PM.Edit.Rectangle';
 import './Edit/L.PM.Edit.Circle';
+import './Edit/L.PM.Edit.CircleMarker';
 
 import '../css/layers.css';
 import '../css/controls.css';
 
 L.PM = L.PM || {
-    Map,
-    Toolbar,
-    Draw,
-    Edit,
-    version,
-    initialize() {
-        this.addInitHooks();
-    },
-    addInitHooks() {
-        function initMap() {
-            if (!this.options.pmIgnore) {
-                this.pm = new L.PM.Map(this);
-            }
+  version,
+  Map,
+  Toolbar,
+  Draw,
+  Edit,
+  activeLang: 'en',
+  initialize(options) {
+    this.addInitHooks(options);
+  },
+  addInitHooks(options = {}) {
+
+    function initMap() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Map(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Map(this);
+      }
+    }
 
-        L.Map.addInitHook(initMap);
+    L.Map.addInitHook(initMap);
 
-        function initLayerGroup() {
-            this.pm = new L.PM.Edit.LayerGroup(this);
+    function initLayerGroup() {
+      // doesn't need pmIgnore condition as the init hook of the individual layers will check it
+      this.pm = new L.PM.Edit.LayerGroup(this);
+    }
+
+    L.LayerGroup.addInitHook(initLayerGroup);
+
+    function initMarker() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Edit.Marker(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Edit.Marker(this);
+      }
+    }
 
-        L.LayerGroup.addInitHook(initLayerGroup);
+    L.Marker.addInitHook(initMarker);
 
-        function initMarker() {
-            if (!this.options.pmIgnore) {
-                this.pm = new L.PM.Edit.Marker(this);
-            }
+    function initCircleMarker() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Edit.CircleMarker(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Edit.CircleMarker(this);
+      }
+    }
+    L.CircleMarker.addInitHook(initCircleMarker);
 
-        L.Marker.addInitHook(initMarker);
 
-        function initPolyline() {
-            if (!this.options.pmIgnore) {
-                this.pm = new L.PM.Edit.Line(this);
-            }
+    function initPolyline() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Edit.Line(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Edit.Line(this);
+      }
+    }
 
-        L.Polyline.addInitHook(initPolyline);
+    L.Polyline.addInitHook(initPolyline);
 
-        function initPolygon() {
-            if (!this.options.pmIgnore) {
-                this.pm = new L.PM.Edit.Poly(this);
-            }
+    function initPolygon() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Edit.Polygon(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Edit.Polygon(this);
+      }
 
-        L.Polygon.addInitHook(initPolygon);
+    }
 
-        function initRectangle() {
-            if (!this.options.pmIgnore) {
-                this.pm = new L.PM.Edit.Rectangle(this);
-            }
+    L.Polygon.addInitHook(initPolygon);
+
+    function initRectangle() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Edit.Rectangle(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Edit.Rectangle(this);
+      }
+    }
 
-        L.Rectangle.addInitHook(initRectangle);
+    L.Rectangle.addInitHook(initRectangle);
 
-        function initCircle() {
-            if (!this.options.pmIgnore) {
-                this.pm = new L.PM.Edit.Circle(this);
-            }
+    function initCircle() {
+      this.pm = undefined;
+
+      if (options.optIn) {
+        if (this.options.pmIgnore === false) {
+          this.pm = new L.PM.Edit.Circle(this);
         }
+      } else if (!this.options.pmIgnore) {
+        this.pm = new L.PM.Edit.Circle(this);
+      }
+    }
 
-        L.Circle.addInitHook(initCircle);
-    },
+    L.Circle.addInitHook(initCircle);
+  },
 };
 
-// initialize leaflet.pm
+// initialize leaflet-geoman
 L.PM.initialize();

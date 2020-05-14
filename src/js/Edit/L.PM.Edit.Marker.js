@@ -1,98 +1,110 @@
 import Edit from './L.PM.Edit';
 
 Edit.Marker = Edit.extend({
-    initialize(layer) {
-        // layer is a marker in this case :-)
-        this._layer = layer;
-        this._enabled = false;
+  initialize(layer) {
+    // layer is a marker in this case :-)
+    this._layer = layer;
+    this._enabled = false;
 
-        // register dragend event e.g. to fire pm:edit
-        this._layer.on('dragend', this._onDragEnd, this);
-    },
+    // register dragend event e.g. to fire pm:edit
+    this._layer.on('dragend', this._onDragEnd, this);
+  },
 
-    toggleEdit(options) {
-        if (!this.enabled()) {
-            this.enable(options);
-        } else {
-            this.disable();
-        }
-    },
+  applyOptions() {
+    // console.log('apply options', this.options)
 
-    enable(options = {
-        draggable: true,
-        snappable: true,
-    }) {
-        L.Util.setOptions(this, options);
+    if (this.options.snappable) {
+      this._initSnappableMarkers();
+    } else {
+      this._disableSnapping();
+    }
 
-        this._map = this._layer._map;
+    if (this.options.draggable) {
+      this._layer.dragging.enable();
+    }
 
-        if (this.enabled()) {
-            return;
-        }
-        this._enabled = true;
+    // enable removal for the marker
+    if (!this.options.preventMarkerRemoval) {
+      this._layer.on('contextmenu', this._removeMarker, this);
+    }
+  },
 
-        // enable removal for the marker
-        if (!this.options.preventMarkerRemoval) {
-            this._layer.on('contextmenu', this._removeMarker, this);
-        }
+  toggleEdit(options) {
+    if (!this.enabled()) {
+      this.enable(options);
+    } else {
+      this.disable();
+    }
+  },
 
-        // enable dragging and removal for the marker
-        if (this.options.draggable) {
-            this._layer.dragging.enable();
-        }
+  enable(options = { draggable: true }) {
+    L.Util.setOptions(this, options);
 
-        // enable snapping
-        if (this.options.snappable) {
-            this._initSnappableMarkers();
-        }
-    },
+    this._map = this._layer._map;
 
-    enabled() {
-        return this._enabled;
-    },
+    if (this.enabled()) {
+      return;
+    }
+    this._enabled = true;
 
-    disable() {
-        this._enabled = false;
+    this.applyOptions();
+  },
 
-        // disable dragging and removal for the marker
-        if (this._layer.dragging) {
-            this._layer.dragging.disable();
-        }
+  enabled() {
+    return this._enabled;
+  },
 
-        this._layer.off('contextmenu', this._removeMarker, this);
+  disable() {
+    this._enabled = false;
 
-        if (this._layerEdited) {
-            this._layer.fire('pm:update', {});
-        }
-        this._layerEdited = false;
-    },
-    _removeMarker(e) {
-        const marker = e.target;
-        marker.remove();
-        // TODO: find out why this is fired manually, shouldn't it be catched by L.PM.Map 'layerremove'?
-        marker.fire('pm:remove');
-    },
-    _onDragEnd(e) {
-        const marker = e.target;
+    // disable dragging and removal for the marker
+    if (this._layer.dragging) {
+      this._layer.dragging.disable();
+    }
 
-        // fire the pm:edit event and pass shape and marker
-        marker.fire('pm:edit');
-        this._layerEdited = true;
-    },
+    this._layer.off('contextmenu', this._removeMarker, this);
 
-    // overwrite initSnappableMarkers from Snapping.js Mixin
-    _initSnappableMarkers() {
-        const marker = this._layer;
+    this._layer.off('dragstart', this._onPinnedMarkerDragStart, this);
 
-        this.options.snapDistance = this.options.snapDistance || 30;
+    this._layer.fire('pm:disable');
 
-        marker.off('drag', this._handleSnapping, this);
-        marker.on('drag', this._handleSnapping, this);
+    if (this._layerEdited) {
+      this._layer.fire('pm:update', {});
+    }
+    this._layerEdited = false;
+  },
+  _removeMarker(e) {
+    const marker = e.target;
+    marker.remove();
+    // TODO: find out why this is fired manually, shouldn't it be catched by L.PM.Map 'layerremove'?
+    marker.fire('pm:remove');
+  },
+  _onDragEnd(e) {
+    const marker = e.target;
 
-        marker.off('dragend', this._cleanupSnapping, this);
-        marker.on('dragend', this._cleanupSnapping, this);
+    // fire the pm:edit event and pass shape and marker
+    marker.fire('pm:edit');
+    this._layerEdited = true;
+  },
+  // overwrite initSnappableMarkers from Snapping.js Mixin
+  _initSnappableMarkers() {
+    const marker = this._layer;
 
-        marker.off('pm:dragstart', this._unsnap, this);
-        marker.on('pm:dragstart', this._unsnap, this);
-    },
+    this.options.snapDistance = this.options.snapDistance || 30;
+
+    marker.off('drag', this._handleSnapping, this);
+    marker.on('drag', this._handleSnapping, this);
+
+    marker.off('dragend', this._cleanupSnapping, this);
+    marker.on('dragend', this._cleanupSnapping, this);
+
+    marker.off('pm:dragstart', this._unsnap, this);
+    marker.on('pm:dragstart', this._unsnap, this);
+  },
+  _disableSnapping() {
+    const marker = this._layer;
+    marker.off('drag', this._handleSnapping, this);
+    marker.off('dragend', this._cleanupSnapping, this);
+    marker.off('pm:dragstart', this._unsnap, this);
+  }
 });
