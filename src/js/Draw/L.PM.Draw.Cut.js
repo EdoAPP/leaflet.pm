@@ -15,36 +15,68 @@ Draw.Cut = Draw.Polygon.extend({
     const layers = Object.keys(all)
       // convert object to array
       .map(l => all[l])
-      // only layers handled by leaflet-geoman
+      // only layers handled by leaflet.pm
       .filter(l => l.pm)
       // only polygons
       .filter(l => l instanceof L.Polygon)
       // exclude the drawn one
       .filter(l => l !== layer)
       // only layers with intersections
-      .filter(l => {
+      .filter((l) => {
         try {
-          return !!intersect(layer.toGeoJSON(15), l.toGeoJSON(15));
+          return !!intersect(layer.toGeoJSON(), l.toGeoJSON());
         } catch (e) {
-          /* eslint-disable-next-line no-console */
           console.error('You cant cut polygons with self-intersections');
           return false;
         }
       });
 
     // loop through all layers that intersect with the drawn (cutting) layer
-    layers.forEach(l => {
-      // find layer difference
+    layers.forEach((l) => {
       const diff = difference(l.toGeoJSON(15), layer.toGeoJSON(15));
 
       // the resulting layer after the cut
-      const resultingLayer = L.geoJSON(diff, l.options).addTo(this._map);
+      const resultingLayer = L.geoJSON(diff, l.options);
 
       // give the new layer the original options
       resultingLayer.pm.enable(this.options);
       resultingLayer.pm.disable();
 
+      let resultingLayers = [resultingLayer];
 
+      if (
+        diff &&
+        diff.geometry &&
+        diff.geometry.type === "MultiPolygon"
+      ) {
+        resultingLayers = diff.geometry.coordinates.map((coordinates) => {
+          const geojson = {
+            type: 'Polygon',
+            coordinates,
+          };
+
+          const newLayer = L.geoJSON(geojson, l.options);
+
+          newLayer.pm.enable(this.options);
+          newLayer.pm.disable();
+
+          return newLayer;
+        });
+      }
+
+      // fire pm:cut on the cutted layer
+      l.fire('pm:cut', {
+        shape: this._shape,
+        resultingLayers,
+        cuttedLayer: l,
+      });
+
+      // fire pm:cut on the map
+      this._map.fire('pm:cut', {
+        shape: this._shape,
+        resultingLayers,
+        cuttedLayer: l,
+      });
 
       // add templayer prop so pm:remove isn't fired
       l._pmTempLayer = true;
@@ -57,26 +89,10 @@ Draw.Cut = Draw.Polygon.extend({
       if (resultingLayer.getLayers().length === 0) {
         this._map.pm.removeLayer({ target: resultingLayer });
       }
-
-      // fire pm:cut on the cutted layer
-      l.fire('pm:cut', {
-        shape: this._shape,
-        layer: resultingLayer,
-        originalLayer: l,
-      });
-
-      // fire pm:cut on the map
-      this._map.fire('pm:cut', {
-        shape: this._shape,
-        layer: resultingLayer,
-        originalLayer: l,
-      });
-
-
     });
   },
   _finishShape() {
-    // if self intersection is not allowed, do not finish the shape!
+
     if (!this.options.allowSelfIntersection) {
       this._handleSelfIntersection(false);
 
