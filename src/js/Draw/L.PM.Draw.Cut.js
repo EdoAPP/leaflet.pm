@@ -43,8 +43,8 @@ Draw.Cut = Draw.Polygon.extend({
       resultingLayer.pm.disable();
 
       // add templayer prop so pm:remove isn't fired
-      l._pmTempLayer = true;
-      layer._pmTempLayer = true;
+      // l._pmTempLayer = true;
+      // layer._pmTempLayer = true;
 
       // remove old layer and cutting layer
       // l.remove();
