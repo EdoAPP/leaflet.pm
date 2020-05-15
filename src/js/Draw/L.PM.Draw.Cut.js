@@ -42,6 +42,18 @@ Draw.Cut = Draw.Polygon.extend({
       resultingLayer.pm.enable(this.options);
       resultingLayer.pm.disable();
 
+      // add templayer prop so pm:remove isn't fired
+      l._pmTempLayer = true;
+      layer._pmTempLayer = true;
+
+      // remove old layer and cutting layer
+      l.remove();
+      layer.remove();    
+
+      if (resultingLayer.getLayers().length === 0) {
+        this._map.pm.removeLayer({ target: resultingLayer });
+      }   
+               
       let resultingLayers = [resultingLayer];
 
       if (
@@ -62,19 +74,9 @@ Draw.Cut = Draw.Polygon.extend({
 
           return newLayer;
         });
-
-
-      // add templayer prop so pm:remove isn't fired
-      l._pmTempLayer = true;
-      layer._pmTempLayer = true;
-
-      // remove old layer and cutting layer
-      l.remove();
-      layer.remove();
-
-      if (resultingLayer.getLayers().length === 0) {
-        this._map.pm.removeLayer({ target: resultingLayer });
       }
+
+
 
       // fire pm:cut on the cutted layer
       l.fire('pm:cut', {
