@@ -1,6 +1,69 @@
 describe('Draw & Edit Poly', () => {
   const mapSelector = '#map';
 
+  it('drages shared vertices when pinned', () => {
+    cy.toolbarButton('polygon').click();
+
+    cy.get(mapSelector)
+      .click(120, 150)
+      .click(120, 100)
+      .click(300, 100)
+      .click(300, 200)
+      .click(120, 150);
+
+    cy.toolbarButton('marker').click();
+
+    cy.get(mapSelector)
+      .click(300, 100)
+
+    cy.toolbarButton('edit').click();
+
+  });
+
+  it('works without pmIgnore', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: false });
+      cy.drawShape('MultiPolygon');
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(8);
+  });
+
+  it('respects pmIgnore', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: false });
+      cy.drawShape('MultiPolygon', true);
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(0);
+  });
+
+  it('respects optIn', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: true });
+      cy.drawShape('MultiPolygon');
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(0);
+  });
+
+  it('respects pmIgnore with optIn', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: true });
+      cy.drawShape('MultiPolygon', false);
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(8);
+  });
+
   it('doesnt finish single point polys', () => {
     cy.toolbarButton('polygon').click();
 
@@ -13,6 +76,18 @@ describe('Draw & Edit Poly', () => {
     cy.hasVertexMarkers(0);
 
     cy.toolbarButton('edit').click();
+  });
+
+  it('handles polygon additions mid-drawing', () => {
+    // for manual testing
+    cy.toolbarButton('polygon').click();
+    cy.get(mapSelector)
+      .click(90, 250);
+
+    cy.wait(2000)
+    cy.drawShape('LineString', true);
+
+    // manual test if snapping works here
   });
 
   it('doesnt finish two point polys', () => {
@@ -128,7 +203,7 @@ describe('Draw & Edit Poly', () => {
   it('adds new vertex to end of array', () => {
     // when adding a vertex between the first and last current vertex,
     // the new coord should be added to the end, not the beginning of the coord array
-    // https://github.com/codeofsumit/leaflet.pm/issues/312
+    // https://github.com/geoman-io/leaflet-geoman/issues/312
 
     cy.toolbarButton('polygon')
       .click()
@@ -226,12 +301,12 @@ describe('Draw & Edit Poly', () => {
 
     // draw a polygon
     cy.get(mapSelector)
-      .click(90, 250)
+      .click(120, 250)
       .click(100, 50)
       .click(150, 50)
       .click(150, 150)
       .click(200, 150)
-      .click(90, 250);
+      .click(120, 250);
 
     // button should be disabled after successful draw
     cy.toolbarButton('polygon')
@@ -282,6 +357,49 @@ describe('Draw & Edit Poly', () => {
       .closest('.button-container')
       .should('have.not.class', 'active');
   });
+
+  it('fire pm:cut AFTER the actual cut is visible on the map', () => {
+    cy.window().then(({ map, L }) => {
+
+      Cypress.$(map).on('pm:cut', () => {
+        const layers = [];
+
+        map.eachLayer((layer) => {
+          if (layer instanceof L.Polygon) {
+            layers.push(layer)
+          }
+        })
+
+        expect(layers).to.have.lengthOf(1);
+      });
+    });
+
+    cy.toolbarButton('polygon')
+      .click()
+
+    cy.get(mapSelector)
+      .click(90, 250)
+      .click(150, 50)
+      .click(500, 50)
+      .click(500, 300)
+      .click(300, 350)
+      .click(90, 250);
+
+
+    cy.toolbarButton('cut')
+      .click();
+
+    // draw a polygon to cut
+    cy.get(mapSelector)
+      .click(450, 100)
+      .click(450, 150)
+      .click(400, 150)
+      .click(390, 140)
+      .click(390, 100)
+      .click(450, 100);
+
+
+  })
 
   it('draws a polygon with a hole', () => {
     // activate polygon drawing
