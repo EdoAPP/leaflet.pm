@@ -44,8 +44,7 @@ module.exports = {
         ],
     },
     plugins: [
-<<<<<<< HEAD
-        new ExtractTextPlugin('leaflet.pm.css'),
+        new MiniCssExtractPlugin({ filename: 'leaflet-geoman.css' }),
         // new UglifyJsPlugin({
         //     uglifyOptions: {
         //         ie8: true,
@@ -59,17 +58,5 @@ module.exports = {
             'process.env': {
                 // This has effect on the react lib size
                 NODE_ENV: JSON.stringify('production'),
-=======
-        new MiniCssExtractPlugin({ filename: 'leaflet-geoman.css' }),
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                ie8: true,
-                warnings: false, // Suppress uglification warnings
-                output: {
-                    comments: false,
-                },
->>>>>>> upstream/master
-            },
-        }),
     ],
 };
