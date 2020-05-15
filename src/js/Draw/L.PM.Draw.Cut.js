@@ -47,12 +47,12 @@ Draw.Cut = Draw.Polygon.extend({
       layer._pmTempLayer = true;
 
       // remove old layer and cutting layer
-      l.remove();
-      layer.remove();    
+      // l.remove();
+      // layer.remove();    
 
-      if (resultingLayer.getLayers().length === 0) {
-        this._map.pm.removeLayer({ target: resultingLayer });
-      }   
+      // if (resultingLayer.getLayers().length === 0) {
+      //   this._map.pm.removeLayer({ target: resultingLayer });
+      // }   
                
       let resultingLayers = [resultingLayer];
 
