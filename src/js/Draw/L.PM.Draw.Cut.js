@@ -36,8 +36,8 @@ Draw.Cut = Draw.Polygon.extend({
       const diff = difference(l.toGeoJSON(15), layer.toGeoJSON(15));
 
       // the resulting layer after the cut
-      const resultingLayer = L.geoJSON(diff, l.options).addTo(this._map);
-
+     // const resultingLayer = L.geoJSON(diff, l.options).addTo(this._map);
+      const resultingLayer = L.geoJSON(diff, l.options)
       // give the new layer the original options
       resultingLayer.pm.enable(this.options);
       resultingLayer.pm.disable();
