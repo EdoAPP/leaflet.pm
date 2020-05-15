@@ -44,57 +44,6 @@ describe('Draw Circle Marker', () => {
     createMarkers();
   });
 
-
-  it('handles 6k circle markers in under 1 sec', () => {
-
-    cy.toolbarButton('circle-marker')
-      .click()
-
-    cy.get(mapSelector)
-      .click(150, 250)
-
-    cy.testLayerAdditionPerformance();
-  });
-
-
-
-  it('correctly disables drag', () => {
-
-    createMarkers();
-
-    cy.window().then(({ map, L }) => {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.CircleMarker) {
-          assert.isFalse(L.DomUtil.hasClass(layer._path, 'leaflet-pm-draggable'), 'not draggable')
-        }
-      })
-    });
-
-    cy.toolbarButton('edit')
-      .click()
-
-    cy.window().then(({ map, L }) => {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.CircleMarker) {
-          assert.isTrue(L.DomUtil.hasClass(layer._path, 'leaflet-pm-draggable'), 'draggable')
-        }
-      })
-    });
-
-    cy.toolbarButton('edit')
-      .click()
-
-    cy.window().then(({ map, L }) => {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.CircleMarker) {
-          assert.isFalse(L.DomUtil.hasClass(layer._path, 'leaflet-pm-draggable'), 'not draggable')
-        }
-      })
-    });
-
-
-  });
-
   it('deletes all circle markers', () => {
     createMarkers();
 

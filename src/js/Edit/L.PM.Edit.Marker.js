@@ -10,25 +10,6 @@ Edit.Marker = Edit.extend({
     this._layer.on('dragend', this._onDragEnd, this);
   },
 
-  applyOptions() {
-    // console.log('apply options', this.options)
-
-    if (this.options.snappable) {
-      this._initSnappableMarkers();
-    } else {
-      this._disableSnapping();
-    }
-
-    if (this.options.draggable) {
-      this._layer.dragging.enable();
-    }
-
-    // enable removal for the marker
-    if (!this.options.preventMarkerRemoval) {
-      this._layer.on('contextmenu', this._removeMarker, this);
-    }
-  },
-
   toggleEdit(options) {
     if (!this.enabled()) {
       this.enable(options);
@@ -37,7 +18,12 @@ Edit.Marker = Edit.extend({
     }
   },
 
-  enable(options = { draggable: true }) {
+  enable(
+    options = {
+      draggable: true,
+      snappable: true,
+    }
+  ) {
     L.Util.setOptions(this, options);
 
     this._map = this._layer._map;
@@ -47,7 +33,20 @@ Edit.Marker = Edit.extend({
     }
     this._enabled = true;
 
-    this.applyOptions();
+    // enable removal for the marker
+    if (!this.options.preventMarkerRemoval) {
+      this._layer.on('contextmenu', this._removeMarker, this);
+    }
+
+    // enable dragging and removal for the marker
+    if (this.options.draggable) {
+      this._layer.dragging.enable();
+    }
+
+    // enable snapping
+    if (this.options.snappable) {
+      this._initSnappableMarkers();
+    }
   },
 
   enabled() {
@@ -63,10 +62,6 @@ Edit.Marker = Edit.extend({
     }
 
     this._layer.off('contextmenu', this._removeMarker, this);
-
-    this._layer.off('dragstart', this._onPinnedMarkerDragStart, this);
-
-    this._layer.fire('pm:disable');
 
     if (this._layerEdited) {
       this._layer.fire('pm:update', {});
@@ -86,6 +81,7 @@ Edit.Marker = Edit.extend({
     marker.fire('pm:edit');
     this._layerEdited = true;
   },
+
   // overwrite initSnappableMarkers from Snapping.js Mixin
   _initSnappableMarkers() {
     const marker = this._layer;
@@ -101,10 +97,4 @@ Edit.Marker = Edit.extend({
     marker.off('pm:dragstart', this._unsnap, this);
     marker.on('pm:dragstart', this._unsnap, this);
   },
-  _disableSnapping() {
-    const marker = this._layer;
-    marker.off('drag', this._handleSnapping, this);
-    marker.off('dragend', this._cleanupSnapping, this);
-    marker.off('pm:dragstart', this._unsnap, this);
-  }
 });
