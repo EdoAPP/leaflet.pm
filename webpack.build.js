@@ -1,6 +1,6 @@
 /* eslint import/no-extraneous-dependencies: 0 */
 const webpack = require('webpack');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -8,18 +8,12 @@ module.exports = {
     watch: false,
     // devtool: 'cheap-source-map',
     entry: ['./src/js/L.PM.js'],
-    mode: 'production',
     output: {
-        filename: 'leaflet-geoman.min.js',
+        filename: 'leaflet.pm.min.js',
         path: path.resolve(__dirname, 'dist'),
     },
     module: {
         rules: [
-            {
-                test: /\.mjs$/,
-                include: /node_modules/,
-                type: "javascript/auto",
-            },
             {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
@@ -33,9 +27,10 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
-                }, 'css-loader',],
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader',
+                }),
             },
             {
                 test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
@@ -44,7 +39,7 @@ module.exports = {
         ],
     },
     plugins: [
-        new MiniCssExtractPlugin({ filename: 'leaflet-geoman.css' }),
+        new ExtractTextPlugin('leaflet.pm.css'),
         // new UglifyJsPlugin({
         //     uglifyOptions: {
         //         ie8: true,

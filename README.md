@@ -1,42 +1,37 @@
 <p align="center">
-  <a href="https://geoman.io/leaflet-geoman">
+  <a href="https://leafletpm.now.sh">
     <img width="130" alt="Geoman Logo" src="https://file-jxzyjgqwut.now.sh/" />
   </a>
 </p>
 <h1 align="center">
-  Leaflet-Geoman
+  Leaflet.PM
 </h1>
 <p align="center">
   <strong>Leaflet Plugin For Creating And Editing Geometry Layers</strong><br>
-  Draw, Edit, Drag, Cut, Snap and Pin Layers<br>
+  Draw, Edit, Drag, Cut and Snap Layers<br>
   Supports Markers, CircleMarkers, Polylines, Polygons, Circles, Rectangles, LayerGroups, GeoJSON and MultiPolygons
 </p>
 <p align="center">
-  <a href="https://badge.fury.io/js/%40geoman-io%2Fleaflet-geoman-free">
-    <img src="https://badge.fury.io/js/%40geoman-io%2Fleaflet-geoman-free.svg" alt="npm version" height="18">
+  <a href="https://badge.fury.io/js/leaflet.pm">
+    <img src="https://badge.fury.io/js/leaflet.pm.svg" alt="npm version" />
   </a>
   <a href="#">
-    <img src="https://github.com/geoman-io/leaflet-geoman/workflows/Tests/badge.svg" alt="" />
+    <img src="https://travis-ci.com/codeofsumit/leaflet.pm.svg?branch=develop" alt="" />
   </a>
-  <a href="https://github.com/geoman-io/leaflet-geoman">
-    <img src="http://githubbadges.com/star.svg?user=geoman-io&repo=leaflet-geoman&style=default" alt="star this repo" />
+  <a href="https://github.com/codeofsumit/leaflet.pm">
+    <img src="http://githubbadges.com/star.svg?user=codeofsumit&repo=leaflet.pm&style=default" alt="star this repo" />
   </a>
   <a href="https://www.npmjs.com/package/leaflet.pm">
     <img src="https://img.shields.io/npm/dt/leaflet.pm.svg" alt="NPM Downloads" />
   </a>
-  <a href="https://www.npmjs.com/package/@geoman-io/leaflet-geoman-free">
-    <img src="https://img.shields.io/npm/dt/@geoman-io/leaflet-geoman-free.svg" alt="NPM Downloads" />
-  </a>
 </p>
 
-## [👉 Live Demo 👈](https://geoman.io/leaflet-geoman)
+## [Demo (click here)](https://leafletpm.now.sh)
 
 ![Demo](https://file-gmeileqfmg.now.sh/)
 
-#### Leaflet-Geoman Pro ⭐
-Companies need more advanced features, reliability and support. In our Pro version, we offer everything from the open source version and add many advanced features for big scale projects.
-Features marked with ⭐ in this documentation are only available in the Pro version.
-[Purchase Pro](https://geoman.io/leaflet-geoman#pro) or [contact me](mailto:sumit@geoman.io)
+Are you using leaflet.pm for commercial projects?\
+Check out **[Geoman](https://geoman.io/#pricing)** and consider subscribing to the **Leaflet.PM Supporter Plan** to support development of advanced leaflet.pm features. You will also get prioritized support and consultation.
 
 ## Documentation
 
@@ -47,32 +42,22 @@ Features marked with ⭐ in this documentation are only available in the Pro ver
 - [Drag Mode](#drag-mode)
 - [Removal Mode](#removal-mode)
 - [Cutting Mode](#cutting-mode)
-- [Options](#options)
 - [Customization](#customize)
-- [Need a feature?](#feature-request) | [Existing Feature Requests](https://github.com/geoman-io/leaflet-geoman/issues?q=is%3Aissue+is%3Aclosed+label%3A%22feature+request%22+sort%3Areactions-%2B1-desc)
-
+- [Need a feature?](#feature-request) | [Existing Feature Requests](https://github.com/codeofsumit/leaflet.pm/issues?q=is%3Aissue+is%3Aclosed+label%3A%22feature+request%22+sort%3Areactions-%2B1-desc)
 
 ### Installation
-
-#### Migrate from Leaflet.PM
-
-```
-npm uninstall leaflet.pm
-npm i @geoman-io/leaflet-geoman-free
-```
-That's it.
 
 #### Install via npm
 
 ```
-npm i @geoman-io/leaflet-geoman-free
+npm i leaflet.pm
 ```
 
 #### Install Manually
 
 Download
-[`leaflet-geoman.css`](https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css) and
-[`leaflet-geoman.min.js`](https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js)
+[`leaflet.pm.css`](https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css) and
+[`leaflet.pm.min.js`](https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js)
 and include them in your project.
 
 #### Include via CDN
@@ -82,57 +67,42 @@ CSS
 <!-- prettier-ignore -->
 ```html
 
-<link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
 ```
 
 JS
 
 ```html
-<script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+<script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
 ```
 
 #### Include as ES6 Module
 
 ```js
-import '@geoman-io/leaflet-geoman-free';
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
+import 'leaflet.pm';
+import 'leaflet.pm/dist/leaflet.pm.css';
 ```
 
 ### Getting Started
 
-#### Init leaflet-geoman
+#### Init Leaflet.PM
 
-Just include `leaflet-geoman.min.js` right after Leaflet. It initializes itself. If
-you want certain layers to be ignored by leaflet-geoman, pass `pmIgnore: true` to
+Just include `leaflet.pm.min.js` right after Leaflet. It initializes itself. If
+you want certain layers to be ignored by leaflet.pm, pass `pmIgnore: true` to
 their options when creating them. Example:
 
 ```js
 L.marker([51.50915, -0.096112], { pmIgnore: true }).addTo(map);
 ```
 
-##### Opt-In
+#### Leaflet.PM Toolbar
 
-If you want to use leaflet-geoman as opt-in, call the following function right after importing:
+<img align="left" height="200" src="https://file-ffrjxxowri.now.sh/" alt="Leaflet.PM Toolbar">
 
-```js
-L.PM.initialize({ optIn: true });
-```
-
-All layers will be ignored by leaflet-geoman, unless you specify `pmIgnore: false` on a layer:
+You can add a toolbar to the map to use leaflet.pm features via a user interface.
 
 ```js
-L.marker([51.50915, -0.096112], { pmIgnore: false }).addTo(map);
-```
-
-
-#### leaflet-geoman Toolbar
-
-<img align="left" height="200" src="https://file-ffrjxxowri.now.sh/" alt="leaflet-geoman Toolbar">
-
-You can add a toolbar to the map to use leaflet-geoman features via a user interface.
-
-```js
-// add leaflet-geoman controls with some options to the map
+// add leaflet.pm controls with some options to the map
 map.pm.addControls({
   position: 'topleft',
   drawCircle: false,
@@ -154,18 +124,22 @@ See the available options in the table below.
 | dragMode      | `true`      | adds button to toggle drag mode for all layers                                                   |
 | cutPolygon    | `true`      | adds button to cut a hole in a polygon                                                           |
 | removalMode   | `true`      | adds a button to remove layers                                                                   |
-| pinningOption   | `true`      | adds a button to toggle the Pinning Option ⭐                                                                   |
-| snappingOption   | `true`      | adds a button to toggle the Snapping Option ⭐                                                                   |
 
 If you are wondering how e.g. the `drawPolygon` button will enable drawing mode
-with specific options, here it is: Simply set the options for the layer. The options will persist, even when
+with specific options, here it is: Simply enable drawing mode programatically,
+pass it your options and disable it again. The options will persist, even when
 the mode is enabled/disabled via the toolbar.
 
 Example:
 
 ```js
 // make markers not snappable during marker draw
-map.pm.setGlobalOptions({ snappable: false });
+map.pm.enableDraw('Marker', { snappable: false });
+map.pm.disableDraw('Marker');
+
+// let polygons finish their shape on double click
+map.pm.enableDraw('Polygon', { finishOn: 'dblclick' });
+map.pm.disableDraw('Polygon');
 ```
 
 All available options are specified in the Drawing Mode Section below.
@@ -270,13 +244,8 @@ See the available options in the table below.
 | :-------------------- | :------ | :-------------------------------------------------------------------------------------------------------- |
 | snappable             | `true`  | Enable snapping to other layers vertices for precision drawing. Can be disabled by holding the `ALT` key. |
 | snapDistance          | `20`    | The distance to another vertex when a snap should happen.                                                 |
-| pinning               | `false` | Pin shared vertices/markers together during edit ⭐. [Details](#pinning)                                  |
 | allowSelfIntersection | `true`  | Allow/Disallow self-intersections on polygons and polylines.                                              |
 | preventMarkerRemoval  | `false` | Disable the removal of markers/vertexes via right click.                                                  |
-| limitMarkersToCount   | `-1`    | Shows only `n` markers closest to the cursor. Use `-1` for no limit                                       |
-| limitMarkersToZoom    | `-1`    | Shows markers when under the given zoom level ⭐                                                          |
-| limitMarkersToViewport| `false`    | Shows only markers in the viewport ⭐                                                                  |
-| limitMarkersToClick   | `false`    | Shows markers only after the layer was clicked ⭐                                                      |
 
 The following methods are available for layers under `layer.pm`:
 
@@ -302,8 +271,6 @@ The following events are available on a layer instance:
 | Event              | Params | Description                                                                                          |
 | :----------------- | :----- | :--------------------------------------------------------------------------------------------------- |
 | pm:edit            | `e`    | Fired when a layer is edited.                                                                        |
-| pm:update          | `e`    | Fired when a layer is edited and its coordinates have changed.                                       |
-| pm:disable     | `e`    | Fired when edit mode on a layer is disabled                                                          |
 | pm:vertexadded     | `e`    | Fired when a vertex is added                                                                         |
 | pm:vertexremoved   | `e`    | Fired when a vertex is removed                                                                       |
 | pm:markerdragstart | `e`    | Fired when dragging of a marker which corresponds to a vertex starts                                 |
@@ -363,7 +330,7 @@ The following events are available on a layer instance:
 You can also listen to specific drag mode events on the map instance like this:
 
 ```js
-map.on('pm:globaldragmodetoggled', e => {
+map.on('pm:globaldrawmodetoggled', e => {
   console.log(e);
 });
 ```
@@ -419,7 +386,7 @@ map.pm.Draw.Cut.enable({
 });
 ```
 
-Available options are the [same as in drawing mode](https://github.com/geoman-io/leaflet-geoman/tree/new-docs#drawing-mode).
+Available options are the [same as in drawing mode](https://github.com/codeofsumit/leaflet.pm/tree/new-docs#drawing-mode).
 
 You can use these methods on `map.pm.Draw.Cut` to handle Cutting mode:
 
@@ -441,64 +408,17 @@ The following events are available on a map instance:
 | :----- | :----- | :-------------------------------- |
 | pm:cut | `e`    | Fired when any layer is being cut |
 
-### Options
-
-You have many options available when drawing and editing your layers (described above).
-You can set the options per layer as described above, or you can set them globally for all layers. This is especially useful when you use the toolbar and can't change the options programatically.
-
-Examples:
-
-```js
-layer.pm.enable({ pinning: true, snappable: false })
-```
-```js
-map.pm.setGlobalOptions({ pinning: true, limitMarkersToCount: 15, limitMarkersCountGlobally: true })
-```
-
-The following options are available globally and apply when going into global edit mode.
-
-| Option                | Default | Description                                                                                               |
-| :-------------------- | :------ | :-------------------------------------------------------------------------------------------------------- |
-| snappable             | `true`  | Enable snapping to other layers vertices for precision drawing. Can be disabled by holding the `ALT` key. |
-| snapDistance          | `20`    | The distance to another vertex when a snap should happen.                                                 |
-| pinning               | `false` | Pin shared vertices/markers together during edit ⭐. [Details](#pinning)                                  |
-| allowSelfIntersection | `true`  | Allow/Disallow self-intersections on polygons and polylines.                                              |
-| preventMarkerRemoval  | `false` | Disable the removal of markers/vertexes via right click.                                                  |
-| limitMarkersToCount   | `-1`    | Shows only `n` markers per layer closest to the cursor. Use `-1` for no limit                                       |
-| limitMarkersCountGlobally             | `false`  | Activates `limitMarkersToCount` across layers on the entire map, not just per layer ⭐
-| limitMarkersToZoom    | `-1`    | Shows markers when under the given zoom level ⭐                                                          |
-| limitMarkersToViewport| `false`    | Shows only markers in the viewport ⭐                                                                  |
-| limitMarkersToClick   | `false`    | Shows markers only after the layer was clicked ⭐                                                      |
-
-
-Some details about a few more powerful options:
-
-
-##### Snapping
-
-Snap the dragged marker/vertex to other layers for precision drawing.
-
-![Snapping Options](https://files-r7ezk18qq.now.sh/snapping.gif)
-
-
-##### Pinning ⭐
-
-When dragging a vertex/marker, you can pin all other Markers/Vertices that have the same latlng to the dragged marker. Exclusive for Leaflet-Geoman Pro ⭐
-
-![Pinning Option](https://user-images.githubusercontent.com/2399810/65375984-288ece80-dc9b-11e9-930e-bca03ad7cb56.gif)
-
-
 ### Customize
 
 ##### Customize Language
 
-Change the language of user-facing copy in leaflet-geoman
+Change the language of user-facing copy in leaflet.pm
 
 ```js
 map.pm.setLang('de');
 ```
 
-Currently available languages are `en`, `de`, `it`, `ru`, `ro`, `es`, `fr`, `pt_br`, `id`, `zh`, `nl`, `pl` and `sv`.
+Currently available languages are `en`, `de`, `it`, `ru`, `ro`, `es`, `fr`, `pt_br`, `zh` and `nl`.
 To add translations to the plugin, you can add [a translation file](src/assets/translations) via Pull Request.
 
 You can also provide your own custom translations.
@@ -573,7 +493,7 @@ map.pm.setPathOptions({
 
 I'm adopting the Issue Management of lodash which means, feature requests get the "Feature Request" Label and then get closed.
 You can upvote existing feature requests (or create new ones). Upvotes make me see how much a feature is requested and prioritize their implementation.
-Please see the existing [Feature Requests here](https://github.com/geoman-io/leaflet-geoman/issues?q=is%3Aissue+is%3Aclosed+label%3A%22feature+request%22+sort%3Areactions-%2B1-desc) and upvote if you want them to be implemented.
+Please see the existing [Feature Requests here](https://github.com/codeofsumit/leaflet.pm/issues?q=is%3Aissue+is%3Aclosed+label%3A%22feature+request%22+sort%3Areactions-%2B1-desc) and upvote if you want them to be implemented.
 
 ### Credit
 
@@ -584,3 +504,5 @@ familiar code.
 I also took a hard look at the great
 [L.GeometryUtil](https://github.com/makinacorpus/Leaflet.GeometryUtil) for some
 of my helper functions.
+
+If you want to support the development of leaflet.pm, consider subscribing to the services of [Geoman](https://geoman.io).

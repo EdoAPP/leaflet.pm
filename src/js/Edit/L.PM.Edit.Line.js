@@ -4,8 +4,6 @@ import Edit from './L.PM.Edit';
 import Utils from '../L.PM.Utils';
 import { isEmptyDeep } from '../helpers';
 
-import MarkerLimits from '../Mixins/MarkerLimits';
-
 // Shit's getting complicated in here with Multipolygon Support. So here's a quick note about it:
 // Multipolygons with holes means lots of nested, multidimensional arrays.
 // In order to find a value inside such an array you need a path to adress it directly.
@@ -15,18 +13,9 @@ import MarkerLimits from '../Mixins/MarkerLimits';
 // Got it? Now you know what is meant when you read "indexPath" around here. Have fun 👍
 
 Edit.Line = Edit.extend({
-  includes: [MarkerLimits],
   initialize(layer) {
     this._layer = layer;
     this._enabled = false;
-  },
-
-  applyOptions() {
-    if (this.options.snappable) {
-      this._initSnappableMarkers();
-    } else {
-      this._disableSnapping();
-    }
   },
 
   toggleEdit(options) {
@@ -61,8 +50,6 @@ Edit.Line = Edit.extend({
     // init markers
     this._initMarkers();
 
-    this.applyOptions();
-
     // if polygon gets removed from map, disable edit mode
     this._layer.on('remove', this._onLayerRemove, this);
 
@@ -75,7 +62,9 @@ Edit.Line = Edit.extend({
     }
 
     if (!this.options.allowSelfIntersection) {
-      this.cachedColor = this._layer.options.color;
+      if (!this.cachedColor) {
+        this.cachedColor = this._layer.options.color;
+      }
 
       this.isRed = false;
       this._handleLayerStyle();
@@ -110,8 +99,6 @@ Edit.Line = Edit.extend({
     // remove onRemove listener
     this._layer.off('remove', this._onLayerRemove, this);
 
-
-
     if (!this.options.allowSelfIntersection) {
       this._layer.off(
         'pm:vertexremoved',
@@ -127,8 +114,6 @@ Edit.Line = Edit.extend({
     if (this.hasSelfIntersection()) {
       L.DomUtil.removeClass(el, 'leaflet-pm-invalid');
     }
-
-    this._layer.fire('pm:disable');
 
     if (this._layerEdited) {
       this._layer.fire('pm:update', {});
@@ -203,6 +188,7 @@ Edit.Line = Edit.extend({
     // add markerGroup to map, markerGroup includes regular and middle markers
     this._markerGroup = new L.LayerGroup();
     this._markerGroup._pmTempLayer = true;
+    map.addLayer(this._markerGroup);
 
     // handle coord-rings (outer, inner, etc)
     const handleRing = coordsArr => {
@@ -228,11 +214,9 @@ Edit.Line = Edit.extend({
     // create markers
     this._markers = handleRing(coords);
 
-    // handle possible limitation: maximum number of markers
-    this.filterMarkerGroup();
-
-    // add markerGroup to map
-    map.addLayer(this._markerGroup);
+    if (this.options.snappable) {
+      this._initSnappableMarkers();
+    }
   },
 
   // creates initial markers for coordinates
@@ -352,6 +336,7 @@ Edit.Line = Edit.extend({
       marker: newM,
       indexPath: this.findDeepMarkerIndex(this._markers, newM).indexPath,
       latlng,
+      // TODO: maybe add latlng as well?
     });
 
     if (this.options.snappable) {
@@ -609,8 +594,6 @@ Edit.Line = Edit.extend({
     if (!this.options.allowSelfIntersection) {
       this._coordsBeforeEdit = this._layer.getLatLngs();
     }
-
-    this.cachedColor = this._layer.options.color;
   },
 
   _fireEdit() {

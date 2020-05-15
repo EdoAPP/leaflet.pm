@@ -1,11 +1,8 @@
-/* A Leaflet Plugin For Editing Geometry Layers in Leaflet 1.0
- * Copyright (C) Geoman.io and Sumit Kumar - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Sumit Kumar <sumit@geoman.io>, January 2020
- * Twitter: @TweetsOfSumit
- * OSS Repo: https://github.com/geoman-io/leaflet-geoman
- * Get Pro: https://geoman.io/leaflet-geoman#pro
+/**
+ *
+ * A Leaflet Plugin For Editing Geometry Layers in Leaflet 1.0
+ * by Sumit Kumar (@TweetsOfSumit)
+ * Github Repo: https://github.com/codeofsumit/leaflet.pm
  */
 
 import './polyfills';
@@ -42,19 +39,12 @@ L.PM = L.PM || {
   Draw,
   Edit,
   activeLang: 'en',
-  initialize(options) {
-    this.addInitHooks(options);
+  initialize() {
+    this.addInitHooks();
   },
-  addInitHooks(options = {}) {
-
+  addInitHooks() {
     function initMap() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Map(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Map(this);
       }
     }
@@ -62,20 +52,13 @@ L.PM = L.PM || {
     L.Map.addInitHook(initMap);
 
     function initLayerGroup() {
-      // doesn't need pmIgnore condition as the init hook of the individual layers will check it
       this.pm = new L.PM.Edit.LayerGroup(this);
     }
 
     L.LayerGroup.addInitHook(initLayerGroup);
 
     function initMarker() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Edit.Marker(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Edit.Marker(this);
       }
     }
@@ -83,13 +66,7 @@ L.PM = L.PM || {
     L.Marker.addInitHook(initMarker);
 
     function initCircleMarker() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Edit.CircleMarker(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Edit.CircleMarker(this);
       }
     }
@@ -97,13 +74,7 @@ L.PM = L.PM || {
 
 
     function initPolyline() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Edit.Line(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Edit.Line(this);
       }
     }
@@ -111,28 +82,15 @@ L.PM = L.PM || {
     L.Polyline.addInitHook(initPolyline);
 
     function initPolygon() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Edit.Polygon(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Edit.Polygon(this);
       }
-
     }
 
     L.Polygon.addInitHook(initPolygon);
 
     function initRectangle() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Edit.Rectangle(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Edit.Rectangle(this);
       }
     }
@@ -140,13 +98,7 @@ L.PM = L.PM || {
     L.Rectangle.addInitHook(initRectangle);
 
     function initCircle() {
-      this.pm = undefined;
-
-      if (options.optIn) {
-        if (this.options.pmIgnore === false) {
-          this.pm = new L.PM.Edit.Circle(this);
-        }
-      } else if (!this.options.pmIgnore) {
+      if (!this.options.pmIgnore) {
         this.pm = new L.PM.Edit.Circle(this);
       }
     }
@@ -155,5 +107,5 @@ L.PM = L.PM || {
   },
 };
 
-// initialize leaflet-geoman
+// initialize leaflet.pm
 L.PM.initialize();

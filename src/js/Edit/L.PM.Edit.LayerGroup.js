@@ -30,15 +30,6 @@ Edit.LayerGroup = L.Class.extend({
         this.enable(this.getOptions());
       }
     });
-
-    // if a layer is removed from the group, calc the layers list again
-    this._layerGroup.on('layerremove', e => {
-      if (e.target._pmTempLayer) {
-        return;
-      }
-
-      this._layers = this.findLayers();
-    })
   },
   findLayers() {
     // get all layers of the layer group
@@ -47,10 +38,10 @@ Edit.LayerGroup = L.Class.extend({
     // filter out layers that are no layerGroup
     layers = layers.filter(layer => !(layer instanceof L.LayerGroup));
 
-    // filter out layers that don't have leaflet-geoman
+    // filter out layers that don't have leaflet.pm
     layers = layers.filter(layer => !!layer.pm);
 
-    // filter out everything that's leaflet-geoman specific temporary stuff
+    // filter out everything that's leaflet.pm specific temporary stuff
     layers = layers.filter(layer => !layer._pmTempLayer);
 
     // return them

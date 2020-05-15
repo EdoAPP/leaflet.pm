@@ -19,7 +19,7 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-const accessToken = 'pk.eyJ1IjoibWFwc29mc3VtaXQiLCJhIjoiY2p4bHJvZzczMDNkMzN4bzM0OWkyNjJiMiJ9.OeORcEVrnlz4Ig-WnQNb6g';
+const accessToken = 'pk.eyJ1IjoibWFwc29mc3VtaXQiLCJhIjoiY2p5MDd2dTkxMDBkMjNubXNiaDVvdHo5ZCJ9.eMqOWuqoFITk01ie1I2BYQ';
 
 beforeEach(() => {
 	// create the map
@@ -45,7 +45,7 @@ beforeEach(() => {
 
 			contentWindow.map = map;
 
-			// add leaflet-geoman toolbar
+			// add leaflet.pm toolbar
 			map.pm.addControls();
 		}
 	});
